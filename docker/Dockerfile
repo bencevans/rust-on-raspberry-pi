@@ -5,7 +5,7 @@ ARG RUST_GIT_REF
 
 # install debian dependencies before we lose root privileges
 RUN apt-get update \
-&& apt-get install -y git build-essential file wget python libjemalloc1 llvm;
+&& apt-get install -y git build-essential file wget python libjemalloc1 llvm portaudio19-dev libprotoc-dev libavahi-compat-libdnssd-dev;
 
 # create & get cross user and drop root privileges
 #
@@ -14,6 +14,7 @@ RUN apt-get update \
 # https://medium.com/@brentkearney/docker-on-mac-os-x-9793ac024e94
 RUN groupadd --system cross \
 && useradd --create-home --system --gid cross --uid 1000 cross;
+
 USER cross
 ENV HOME=/home/cross \
 URL_GIT_RUST=https://github.com/rust-lang/rust.git \
@@ -57,6 +58,7 @@ COPY conf/cargo-config $HOME/.cargo/config
 
 COPY bin $HOME/bin
 ENV PATH=$HOME/bin:$PATH
+
 
 ENTRYPOINT ["run.sh"]
 CMD ["help"]
